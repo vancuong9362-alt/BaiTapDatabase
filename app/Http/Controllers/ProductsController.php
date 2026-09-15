@@ -17,7 +17,7 @@ class ProductsController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        if ($request->has('seach')) {
+        if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->factory . '%');
         }
         $products = $query->paginate(10);
