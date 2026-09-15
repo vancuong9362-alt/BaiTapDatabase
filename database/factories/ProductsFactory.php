@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends Factory<Model>
  */
-class ProductFactory extends Factory
+class ProductsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
         'category_id' => fake()->numberBetween(1, 5),
         'name' => fake()->unique()->words(3, true),
-        'decription' => fake()->paragraph(), 
+        'decription' => fake()->paragraph(),
         'price' => fake()->randomFloat(2, 100, 5000),
         'stock' => fake()->numberBetween(10, 100),
         ];
