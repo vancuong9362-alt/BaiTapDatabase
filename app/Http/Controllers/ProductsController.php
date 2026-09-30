@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\addproductsRequest;
-use App\Http\Requests\updateproductsRequest;
+use App\Http\Requests\AddProductsRequest;
+use App\Http\Requests\UpdateProductsRequest;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -13,19 +13,19 @@ class ProductsController extends Controller
 {
     public function index(Request $request)
     {
+        $products = Products::with('category')->paginate(10);
 
-        $query = Products::query();
-        //  Lọc category_id
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-        $products = $query->paginate(10);
-
-        return response()->json($products);
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy danh sách thành công',
+            'data' => $products->items(),
+            'meta' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage()
+            ]
+        ]);
     }
     public function show($id)
     {
@@ -35,7 +35,7 @@ class ProductsController extends Controller
         }
         return response()->json($Products);
     }
-    public function add(addproductsRequest $request)
+    public function add(AddProductsRequest $request)
     {
         $data = $request->validated();
         $product = Products::create($data);
@@ -44,7 +44,7 @@ class ProductsController extends Controller
             'data' => $product
         ]);
     }
-    public function update(updateproductsRequest $request, $id)
+    public function update(UpdateProductsRequest $request, $id)
     {
         $product = Products::find($id);
         if (!$product) {
@@ -65,5 +65,37 @@ class ProductsController extends Controller
         }
         $Products->delete();
         return response()->json(['message' => 'Xóa sản phẩm thành công']);
+    }
+    public function details()
+    {
+        $products = Products::with('detail')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy danh sách 1-1 ',
+            'data' => $products->items(),
+            'meta' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage()
+            ]
+        ]);
+    }
+    public function Tags()
+    {
+
+        $products = Products::with('tags')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy dữ liệu N-N thành công',
+            'data' => $products->items(),
+            'meta' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+            ]
+        ]);
     }
 }
