@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\addproductsRequest;
-use App\Http\Requests\updateproductsRequest;
+use App\Http\Requests\AddProductsRequest;
+use App\Http\Requests\UpdateProductsRequest;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -35,7 +35,7 @@ class ProductsController extends Controller
         }
         return response()->json($Products);
     }
-    public function add(addproductsRequest $request)
+    public function add(AddProductsRequest $request)
     {
         $data = $request->validated();
         $product = Products::create($data);
@@ -44,7 +44,7 @@ class ProductsController extends Controller
             'data' => $product
         ]);
     }
-    public function update(updateproductsRequest $request, $id)
+    public function update(UpdateProductsRequest $request, $id)
     {
         $product = Products::find($id);
         if (!$product) {
