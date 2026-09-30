@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddProductsRequest;
+use App\Http\Requests\UpdateProductsRequest;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
 {
@@ -32,24 +35,26 @@ class ProductsController extends Controller
         }
         return response()->json($Products);
     }
-    public function add(Request $request)
+    public function add(AddProductsRequest $request)
     {
-        $Products = Products::created($request->all());
+        $data = $request->validated();
+        $product = Products::create($data);
         return response()->json([
-            'message' => 'Thêm sản phẩm thành công',
-            'data' => $Products
-        ], 201);
+            'message' => 'Tạo sản phẩm thành công',
+            'data' => $product
+        ]);
     }
-    public function update(Request $request, $id)
+    public function update(UpdateProductsRequest $request, $id)
     {
-        $Products = Products::find($id);
-        if (!$Products) {
-            return response()->json(['message' => 'Không tìm thấy sản phẩm'], 404);
+        $product = Products::find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Không tìm thấy sản phẩm để sửa']);
         }
-        $Products->update($request->all());
+        $data = $request->validated();
+        $product->update($data);
         return response()->json([
-            'message' => 'Cập nhật thành công',
-            'data' => $Products
+            'message' => 'Cập nhật sản phẩm thành công',
+            'data' => $product
         ]);
     }
     public function destroy($id)
