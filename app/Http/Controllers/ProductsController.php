@@ -82,7 +82,7 @@ class ProductsController extends Controller
             ]
         ]);
     }
-    public function Tags()
+    public function tags()
     {
 
         $products = Products::with('tags')->paginate(10);
